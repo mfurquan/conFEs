@@ -1,19 +1,14 @@
 program tests
-   use confess
+   use inform
    implicit none
+   type(vector) :: x(nen)=[vector(-1.,-1.,-1.), &
+                           vector( 1.,-1.,-1.), &
+                           vector(-1., 1.,-1.), &
+                           vector( 1., 1.,-1.), &
+                           vector(-1.,-1., 1.), &
+                           vector( 1.,-1., 1.), &
+                           vector(-1., 1., 1.), &
+                           vector( 1., 1., 1.)]
 
-   integer :: i, j
-   real(kind=rp) :: A(nqd,nen), B(nqd,nen,nen)
-
-   do j = 1,nen
-      write(*,*) (N(i,j), i = 1,nqd)
-   end do
-   write(*,*)
-!   A = grad(N)
-!   do j = 1,nen
-!      write(*,*) (A(i,j), i = 1,nqd)
-!   end do
-!   write(*,*)
-!   B = N.otimes.N
-!   write(*,*) B
+   write(*,*) intgrt_1form(vol,x)
 end program tests

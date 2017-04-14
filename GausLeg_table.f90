@@ -1,7 +1,9 @@
 module gauss_legendre
-   integer,private,parameter :: wp = 8, maxint = 6
+   use control
+   implicit none
+   integer,private,parameter :: maxint = 6
 
-   real(kind=wp),parameter   :: &
+   real(kind=rp),parameter   :: &
 !  table of gauss-points and weights:
    xg(maxint) = [                    &
 !=====================================

@@ -1,0 +1,11 @@
+EXE = test_confess.out
+
+FC = gfortran
+FFLAGS = -g -fbounds-check
+
+LD = $(FC)
+LFLAGS = 
+
+OBJ = control.o GausLeg_table.o LinAlg.o InForm.o
+
+$(EXE) : test_confess.o $(OBJ)
