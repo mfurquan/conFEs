@@ -37,49 +37,61 @@ module inform
                      [nqd,nen])
 
    type(vector),parameter,dimension(nqd,nen) ::                       &
-      N_xi = reshape([((((((vector                                    &
+      N_xi = reshape([((((((vector[                                   &
                      (G1(i,p)*N1(j,q)*N1(k,r),                        &
                       N1(i,p)*G1(j,q)*N1(k,r),                        &
-                      N1(i,p)*N1(j,q)*G1(k,r)),                       &
+                      N1(i,p)*N1(j,q)*G1(k,r)]),                      &
                       i = 1,nqd1), j = 1,nqd1), k = 1,nqd1),          &
                       p = 1,nen1), q = 1,nen1), r = 1,nen1)],         &
                       [nqd,nen])
 
+   interface integrate
+      module procedure integrate_scalar, integrate_vector,            &
+                       integrate_tensor
+   end interface integrate
+
    contains
 
-      pure function intgrt_1form(F_i,x_ele)
+      elemental function integrate_scalar(expr,x_ele)
          implicit none
-         type(vector),intent(in)  :: x_ele(nen)
-         real(kind=rp)            :: intgrt_1form(nen)
-         interface
-            pure function F_i(x_elem)
-               use control
-               use linalg
-               type(vector),intent(in) :: x_elem(nen)
-               real(kind=rp)           :: F_i(nqd,nen)
-            end function F_i
-         end interface
+         real(kind=rp),intent(in) :: expr(nqd)
+         type(vector), intent(in) :: x_ele(nen)
+         real(kind=rp)            :: integrate_scalar
 
-         intgrt_1form = SUM(spread(wq,2,nen)*F_i(x_ele)               &
-                           *spread(jac(x_ele),2,nen),1)
-      end function intgrt_1form
+         integrate_scalar =  SUM(wq*jac(x_ele)*expr)
+      end function integrate_scalar
 
-      pure function intgrt_2form(F_ij,x_ele)
+      elemental function integrate_vector(expr,x_ele)
          implicit none
+         type(vector),intent(in)  :: expr(nqd)
          type(vector),intent(in)  :: x_ele(nen)
-         real(kind=rp)            :: intgrt_2form(nen)
-         interface
-            pure function F_ij(x_elem)
-               use control
-               use linalg
-               type(vector),intent(in) :: x_elem(nen)
-               real(kind=rp)           :: F_ij(nqd,nen,nen)
-            end function F_ij
-         end interface
+         type(vector)             :: integrate_vector
+         real(kind=rp)            :: jacob(nqd)
+         integer                  :: iq
 
-         intgrt_2form = SUM(spread(wq,2,nen)*F_ij(x_ele)              &
-                           *spread(jac(x_ele),2,nen),1)
-      end function intgrt_2form
+         jacob = jac(x_ele)
+         integrate_vector%e =  0._rp
+         do concurrent (iq =  1:nqd)
+            integrate_vector = integrate_vector
+                             + wq(iq)*expr(iq)*jacob(iq)
+         end do
+      end function integrate_vector
+
+      elemental function integrate_tensor(expr,x_ele)
+         implicit none
+         type(tensor),intent(in)  :: expr(nqd)
+         type(vector),intent(in)  :: x_ele(nen)
+         type(tensor)             :: integrate_tensor
+         real(kind=rp)            :: jacob(nqd)
+         integer                  :: iq
+
+         jacob = jac(x_ele)
+         integrate_tensor%e =  0._rp
+         do concurrent (iq =  1:nqd)
+            integrate_tensor = integrate_tensor
+                             + wq(iq)*expr(iq)*jacob(iq)
+         end do
+      end function integrate_tensor
 
       pure function x_xi(x_ele)
          implicit none
@@ -87,9 +99,9 @@ module inform
          type(tensor)             :: x_xi(nqd)
          integer                  :: i, j
 
-         x_xi = tensor(vector(0.,0.,0.),                              &
-                       vector(0.,0.,0.),                              &
-                       vector(0.,0.,0.))
+         x_xi = tensor(reshape([0.,0.,0.,                             &
+                                0.,0.,0.,                             &
+                                0.,0.,0.],[3,3])
          do concurrent (i = 1:nqd, j = 1:nen)
             x_xi(i) = x_xi(i) + N_xi(i,j).otimes.x_ele(j)
          end do

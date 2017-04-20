@@ -14,7 +14,7 @@ module control
 
 !     F I X E D  ( H A R D - C O D E D )  P A R A M E T E R S
 !----------------------------------------------------------------------
-   integer,parameter :: nsd = 3
+   integer,parameter :: nsd = 3, ndf = 1
 
 !      S E L F - E V A L U A T I N G    P A R A M E T E R S
 !----------------------------------------------------------------------
