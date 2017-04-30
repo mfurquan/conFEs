@@ -22,7 +22,9 @@ module control
       qi   = (nqd1 - 1)*nqd1/2 + 1,                                   &
       qf   = (nqd1 + 1)*nqd1/2,                                       &
       nen1 = deg + 1,                                                 &
-      nen  = nen1**nsd,                                               &
-      nqd  = nqd1**nsd
+      nenf = nen1**2,                                                 &
+      nqdf = nqd1**2,                                                 &
+      nen  = nen1**3,                                                 &
+      nqd  = nqd1**3
 
 end module control

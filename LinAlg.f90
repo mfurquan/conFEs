@@ -44,6 +44,17 @@ module linalg
              + t%e(1,3)*(t%e(2,1)*t%e(3,2) - t%e(3,1)*t%e(2,2))
       end function det
 
+      elemental function detz(t)
+         implicit none
+         type(tensor),intent(in)  :: t
+         type(vector),intent(in)  :: detz
+         integer                  :: i
+
+         detz = vector([t%e(1,2)*t%e(2,3) - t%e(2,2)*t%e(3,3),
+                      - t%e(3,1)*t%e(1,3) - t%e(1,1)*t%e(3,3),
+                        t%e(3,1)*t%e(1,2) - t%e(1,1)*t%e(3,2)])
+      end function detz
+
       elemental function Tinv(A,b)
          implicit none
          type(tensor),intent(in)  :: A
