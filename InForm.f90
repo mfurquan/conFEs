@@ -91,8 +91,8 @@ module inform
                        p = 1,nen1), q = 1,nen1)],                     &
                        [nqds,nens])
 
-!                  +-----------+
-!                  |\           \
+!!                 +-----------+
+!!                 |\           \
 !	^ z             | \     6     \
 !	|               |  \           \
 !	|      y        |   +-----------+ nen^3->(nen1,nen1,nen1)
@@ -100,7 +100,7 @@ module inform
 !	 \               \  |           |
 !	  \               \ |     2     |
 !	   \ x             \|           |
-!                      +-----------+ nen^2->(nen1,nen1,1)
+!!                     +-----------+ nen^2->(nen1,nen1,1)
    integer,parameter ::                                               &
       facmap(nens,6) = reshape(                                       &
                        [(i, i = 1,nen+1-nen1,nen1),                   &
